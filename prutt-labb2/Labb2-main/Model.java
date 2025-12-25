@@ -45,7 +45,7 @@ public class Model {
     public int victor(){
         if (QuoridorEngine.hasWinner(boardState))
         {
-            if(boardState.p2c == 0)
+            if(boardState.p2r == 0)
                 return 2;
             return 1;
         }

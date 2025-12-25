@@ -91,8 +91,14 @@ public class TextController implements Controller{
                 }
                 else if (ans.equals("w"))
                 {
-                    getWallMove();
-                    break;
+                    if ((model.currentPlayer==0)?(model.boardState.p1WallsLeft==0):(model.boardState.p2WallsLeft==0))
+                    {
+                        System.out.println("tough luck, you're out of walls, move player instead");
+                    }
+                    else {
+                        getWallMove();
+                        break;
+                    }
                 }
                 // else wrong, keep looping
             } catch (Exception e) {

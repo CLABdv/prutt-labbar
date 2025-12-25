@@ -32,7 +32,6 @@ public class TextView implements View{
         for (int i = 0; i < 9; i++){
             for (int j = 0; j < 8; j++){
                 if (model.boardState.vWalls[i][j]) {
-                    System.out.println("wall at "+i+","+j);
                     currentBoard[2*i][2*j+1]=vWall;
                 }
             }
