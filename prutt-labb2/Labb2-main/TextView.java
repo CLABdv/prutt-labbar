@@ -1,4 +1,3 @@
-// should make this static and stuff
 public class TextView implements View{
     private final char hWall = '-';
     private final char vWall = '|';

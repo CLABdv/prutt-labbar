@@ -12,8 +12,8 @@ public class Main {
         }
         else {
             Model model = new Model();
-            View GUIView = new GUIView(model);
-            GUIView.showBoard(model);
+            GUIView view = new GUIView(model);
+            GUIController _ = new GUIController(model, view);
         }
     }
 }

@@ -1,18 +1,18 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
 
 public class GUIView extends JFrame implements View {
-    private JButton[][] boardSquares;
-    private JLabel gameInfo;
+    public JButton[][] boardSquares;
+    public JTextArea gameInfo;
 
     public GUIView(Model model) {
         setTitle("Quoridor-ish");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); 
         setLayout(new BorderLayout());
 
-        gameInfo = new JLabel("this text should never be seen");
-        gameInfo.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
+        gameInfo = new JTextArea("this text should never be seen\n\n\n\n");
+        gameInfo.setEditable(false);
+        gameInfo.setLineWrap(true);
         add(gameInfo, BorderLayout.NORTH);
         JPanel boardPanel = new JPanel(new GridBagLayout());
         boardSquares = new JButton[17][17];
@@ -21,7 +21,6 @@ public class GUIView extends JFrame implements View {
         for (int i = 0; i < 17; i++) {
             for (int j = 0; j < 17; j++) {
                 boardSquares[i][j] = new JButton();
-                boardSquares[i][j].setOpaque(true);
                 gbc.gridx = j;
                 gbc.gridy = i;
                 if (i % 2 == 0 && j % 2 == 0) {
@@ -47,6 +46,8 @@ public class GUIView extends JFrame implements View {
         pack();
         setMinimumSize(new Dimension(500, 550));
         setLocationRelativeTo(null);
+        showBoard(model);
+        startingScreen(model);
         setVisible(true);
     }
 
@@ -78,6 +79,14 @@ public class GUIView extends JFrame implements View {
                 }
             }
         }
+        if (model.victor() == 0) {
+            gameInfo.setText("\nCurrently player "+ (model.currentPlayer==0?"one's":"two's")+" turn." +
+                "Player one has "+model.boardState.p1WallsLeft+" walls left." +
+                "Player two has "+model.boardState.p2WallsLeft+" walls left.");
+        }
+        else {
+            victoryScreen(model.victor());
+        }
     }
 
     public void victoryScreen(int winner) {
@@ -85,7 +94,9 @@ public class GUIView extends JFrame implements View {
     }
 
     public void startingScreen(Model model) {
-        gameInfo.setText("Welcome to Quoridor. Rules: You can place a wall or move your player to an adjacent square during your turn. Magenta is starting player.");
+        gameInfo.setText(" Welcome to Quoridor.\n Rules: You may place a wall or move your " +
+            "player to an adjacent square during your turn. \n Blue is starting player. " +
+            "Selected wall is top left corner of placed wall.");
     }
 
 }

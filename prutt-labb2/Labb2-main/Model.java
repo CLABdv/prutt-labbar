@@ -8,6 +8,7 @@ public class Model {
     // returns false if move was illegal, make move if legal
     // updates state
     public boolean makeMove(int row, int col) {
+        if (victor()!=0) return false;
         if (QuoridorEngine.isValidMove(boardState, currentPlayer+1, row, col))
         {
             boardState = QuoridorEngine.applyMove(boardState, currentPlayer+1, row, col);
@@ -23,9 +24,9 @@ public class Model {
     // certain rumours about the implementations in some of the assignments in this course.
     // please fix for future course versions (this applies to several other assignments too)
     public boolean placeWall(int row, int col, boolean isVertical) {
+        if (victor()!=0) return false;
         if (QuoridorEngine.canPlaceWall(boardState, row, col, isVertical))
         {
-            System.out.println("Wall is placeable.");
             BoardState tmp = QuoridorEngine.applyWall(boardState, currentPlayer+1, row, col, isVertical);
             // this is whacky but it will work, canPlaceWall does not check 
             // that the players can reach the finish line (aka the name is a misnomer)
@@ -38,7 +39,6 @@ public class Model {
             boardState = tmp;
             return true;
         }
-        System.out.println("Wall was not placeable at "+row+","+col);
         return false;
     }
 
