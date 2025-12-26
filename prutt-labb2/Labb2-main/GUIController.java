@@ -22,10 +22,6 @@ public class GUIController implements Controller {
                 guiView.boardSquares[2*i][2*j].addActionListener((ActionEvent e) -> {model.makeMove(javahoorayi, javahoorayj); guiView.showBoard(model);});
             }
         }
-        if (model.victor()!=0)
-        {
-            guiView.victoryScreen(model.victor());
-        }
     }
     
 
