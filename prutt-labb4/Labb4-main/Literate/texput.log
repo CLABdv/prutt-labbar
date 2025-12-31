@@ -1,0 +1,264 @@
+This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2026/dev/Arch Linux) (preloaded format=pdflatex 2025.12.29)  31 DEC 2025 00:18
+entering extended mode
+ restricted \write18 enabled.
+ %&-line parsing enabled.
+**\documentclass{article}\usepackage{noweb}\pagestyle{noweb}\noweboptions{}\beg
+in{document}\nwfilename{Main.nw}\nwbegindocs{0}\title{Laboration 4}% ===> this 
+file was generated automatically by noweave --- better not edit it
+(/usr/share/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2024/06/29 v1.4n Standard LaTeX document class
+(/usr/share/texmf-dist/tex/latex/base/size10.clo
+File: size10.clo 2024/06/29 v1.4n Standard LaTeX file (size option)
+)
+\c@part=\count196
+\c@section=\count197
+\c@subsection=\count198
+\c@subsubsection=\count199
+\c@paragraph=\count266
+\c@subparagraph=\count267
+\c@figure=\count268
+\c@table=\count269
+\abovecaptionskip=\skip49
+\belowcaptionskip=\skip50
+\bibindent=\dimen141
+)
+(/usr/share/texmf/tex/generic/noweb/noweb.sty
+\nwmarginglue=\dimen142
+\codehsize=\dimen143
+\codemargin=\dimen144
+\nwdefspace=\dimen145
+\equivbox=\box52
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <7> on input line 80.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <5> on input line 80.
+\plusequivbox=\box53
+\@nwbegincodelinewidth=\dimen146
+\nwcodetopsep=\skip51
+\nwcodepenalty=\count270
+\nwbreakcodespace=\dimen147
+\@original@textwidth=\dimen148
+\nwcodecommentsep=\skip52
+\@nwlopage=\count271
+\@nwhipage=\count272
+\@nwlosub=\count273
+\@nwhisub=\count274
+\@nwpagetemp=\count275
+\@nwpagecount=\count276
+\sub@page=\count277
+\@nwalph@n=\count278
+\nw@chunkcount=\count279
+\@commacount=\count280
+\nwix@counter=\count281
+)
+(/usr/share/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def
+File: l3backend-pdftex.def 2024-05-08 L3 backend support: PDF output (pdfTeX)
+\l__color_backend_stack_int=\count282
+\l__pdf_internal_box=\box54
+)
+No file texput.aux.
+\openout1 = `texput.aux'.
+
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 0.
+LaTeX Font Info:    ... okay on input line 0.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 0.
+LaTeX Font Info:    ... okay on input line 0.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 0.
+LaTeX Font Info:    ... okay on input line 0.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 0.
+LaTeX Font Info:    ... okay on input line 0.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 0.
+LaTeX Font Info:    ... okay on input line 0.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 0.
+LaTeX Font Info:    ... okay on input line 0.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 0.
+LaTeX Font Info:    ... okay on input line 0.
+
+*\author{Casper Beckman}
+
+*
+(Please type a command or say `\end')
+*\maketitle
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <12> on input line 0.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <8> on input line 0.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <6> on input line 0.
+
+*\tableofcontents
+No file texput.toc.
+\tf@toc=\write3
+\openout3 = `texput.toc'.
+
+
+*
+(Please type a command or say `\end')
+*\section{Uppgift 1}
+
+*
+(Please type a command or say `\end')
+*Vi har fått i uppgift att implementera Composite-mönstret.
+
+*Vad detta är kan ses i uppgiftslydelsen.
+
+*Vi skriver först ett interface för \texttt{Component},
+
+*vilken kommer bli implementerad av både Composite och Component.
+
+*
+(Please type a command or say `\end')
+*\nwenddocs{}\nwbegincode{1}\moddef{Component.java}\endmoddef\nwstartdeflinemar
+kup\nwenddeflinemarkup
+
+*    String toString();
+
+*    double getWeight();
+
+*    String getName();
+
+*\nwendcode{}\nwbegindocs{2}\nwdocspar
+
+*
+(Please type a command or say `\end')
+*Här är \texttt{getName} endast relevant för extrauppgiften.
+
+*Notera att vi ej har deklarerat funktionerna som endast skulle användas i
+
+*\texttt{Component}. Vi implementerar dessa i {\Tt{}AbstractComponent.java\nwen
+dquote}
+
+*\nwenddocs{}\nwbegincode{3}\moddef{AbstractComponent.java}\endmoddef\nwstartde
+flinemarkup\nwenddeflinemarkup
+
+*    import java.util.ArrayList;
+
+*    public class AbstractComponent implements Component \{
+
+*        protected double weight;
+
+*        protected String name;
+
+*        protected ArrayList <Component> children; // this is always empty for 
+leaf nodes
+
+*
+(Please type a command or say `\end')
+*        public double getWeight() \{
+
+*            \LA{}AbstractComponent getWeight\RA{}
+
+*        \}
+
+*
+(Please type a command or say `\end')
+*        public String toString() \{
+
+*            \LA{}AbstractComponent toString\RA{}
+
+*        \}
+
+*        public String getName() \{
+
+*            return name;
+
+*        \}
+
+*    \}
+
+*\nwendcode{}\nwbegindocs{4}
+
+*
+(Please type a command or say `\end')
+*Vi noterar att vi vill att alla komponenter som innehålls i
+
+*en komponent ska vara med i \texttt{getWeight} respektive
+
+*\texttt{toString}, därmed är det naturligt att implementera dessa rekursivt.
+
+
+*
+
+
+[1
+
+{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}]
+(Please type a command or say `\end')
+*\nwenddocs{}\nwbegincode{5}\moddef{AbstractComponent getWeight}\endmoddef\nwst
+artdeflinemarkup\nwenddeflinemarkup
+
+*    double sum = weight;
+
+*    if (children != null) \{
+
+*        for (Component c : children) \{
+
+*            sum+=c.getWeight();
+
+*        \}
+
+*    \}
+
+*    return sum;
+
+*\nwendcode{}\nwbegindocs{6}\nwdocspar
+
+*
+(Please type a command or say `\end')
+*Notera att denna implementation ger en "trailing newline",
+
+*dock påverkar detta inte oss i vår implementation därmed bryr
+
+*vi oss inte om att göra en mer korrekt implementation.
+
+*\nwenddocs{}\nwbegincode{7}\moddef{AbstractComponent toString}\endmoddef\nwsta
+rtdeflinemarkup\nwenddeflinemarkup
+
+*    StringBuilder sb = new StringBuilder();
+
+*    sb.append(name).append("\\n");
+
+*    if (children != null) \{
+
+*        for (Component c : children) \{
+
+*           sb.append(c.toString());
+
+*        \}
+
+*    \}
+
+*    return sb.toString();
+
+*\nwendcode{}\nwbegindocs{8}\nwdocspar
+
+*\nwenddocs{}\end{document}
+
+
+[2] (./texput.aux)
+ ***********
+LaTeX2e <2024-11-01> patch level 2
+L3 programming layer <2025-01-18>
+ ***********
+ 
+Here is how much of TeX's memory you used:
+ 757 strings out of 475171
+ 12473 string characters out of 5767094
+ 405891 words of memory out of 5000000
+ 23823 multiletter control sequences out of 15000+600000
+ 562991 words of font info for 50 fonts, out of 8000000 for 9000
+ 14 hyphenation exceptions out of 8191
+ 34i,6n,50p,372b,297s stack positions out of 10000i,1000n,20000p,200000b,200000s
+</usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/te
+xmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texmf-dist/fonts/
+type1/public/amsfonts/cm/cmr12.pfb></usr/share/texmf-dist/fonts/type1/public/am
+sfonts/cm/cmr17.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy1
+0.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/sh
+are/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb>
+Output written on texput.pdf (2 pages, 89702 bytes).
+PDF statistics:
+ 46 PDF objects out of 1000 (max. 8388607)
+ 27 compressed objects within 1 object stream
+ 0 named destinations out of 1000 (max. 500000)
+ 1 words of extra memory for PDF output out of 10000 (max. 10000000)
+

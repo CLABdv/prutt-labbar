@@ -14,8 +14,6 @@ public class AbstractComponent implements Component {
         return sum;
     }
     
-    // bit erronous because this returns a trailing newline
-    // that shouldnt cause problems here though
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append(name).append("\n");

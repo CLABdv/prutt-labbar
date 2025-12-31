@@ -1,0 +1,330 @@
+\documentclass{article}\usepackage{noweb}\pagestyle{noweb}\noweboptions{}\begin{document}\nwfilename{Main.nw}\nwbegindocs{0}\title{Laboration 4}% ===> this file was generated automatically by noweave --- better not edit it
+\author{Casper Beckman}
+
+\maketitle
+\tableofcontents
+
+\section{Uppgift 1 (och extrauppgiften)}
+
+Vi har fått i uppgift att implementera Composite-mönstret. 
+Vad detta är kan ses i uppgiftslydelsen.
+Vi skriver först ett interface för \texttt{Component}, 
+vilken kommer bli implementerad av både \texttt{Leaf} och \texttt{Composite}. 
+
+\nwenddocs{}\nwbegincode{1}\moddef{Component.java}\endmoddef\nwstartdeflinemarkup\nwenddeflinemarkup
+public interface Component \{
+    String toString();
+    double getWeight(); 
+    String getName();
+\}
+\nwendcode{}\nwbegindocs{2}\nwdocspar
+
+Här är \texttt{getName} endast relevant för extrauppgiften. 
+Notera att vi ej har deklarerat funktionerna som endast skulle användas i 
+\texttt{Component}. Vi implementerar dessa i {\Tt{}AbstractComponent.java\nwendquote}
+\nwenddocs{}\nwbegincode{3}\moddef{AbstractComponent.java}\endmoddef\nwstartdeflinemarkup\nwenddeflinemarkup
+import java.util.ArrayList;
+public class AbstractComponent implements Component \{
+    protected double weight;
+    protected String name;
+    protected ArrayList <Component> children; // this is always empty for leaf nodes
+
+    public double getWeight() \{
+        \LA{}AbstractComponent getWeight\RA{}
+    \}
+    
+    public String toString() \{
+        \LA{}AbstractComponent toString\RA{}
+    \}
+    public String getName() \{
+        return name;
+    \}
+\}
+\nwendcode{}\nwbegindocs{4}   
+
+Vi gör nu implementationen av {\Tt{}Leaf.java\nwendquote}. Det enda 
+vi behöver från denna är en konstruktor som tar vikt och
+namn av vad vi nu packar:
+
+\nwenddocs{}\nwbegincode{5}\moddef{Leaf.java}\endmoddef\nwstartdeflinemarkup\nwenddeflinemarkup
+public class Leaf extends AbstractComponent \{
+    public Leaf(double weight, String name) \{
+        this.weight=weight;
+        this.name=name;
+    \}
+\}
+\nwendcode{}\nwbegindocs{6}\nwdocspar
+
+\texttt{Composite}-klassen blir något mer avancerad. 
+Här behöver vi även initiera våra children ty dessa
+kan ha barn. Dessutom behöver vi implementera 
+\texttt{add} och \texttt{remove}. Ignorera implementationen 
+av \texttt{Iterable} tillsvidare, vi återkommer till den
+i extrauppgiften.
+
+\nwenddocs{}\nwbegincode{7}\moddef{Composite.java}\endmoddef\nwstartdeflinemarkup\nwenddeflinemarkup
+import java.util.ArrayList;
+import java.util.Iterator;
+
+public class Composite extends AbstractComponent implements Iterable<Component>\{
+    public Composite(double weight, String name) \{
+        this.weight = weight;
+        this.name = name;
+        children = new ArrayList<>();
+    \}
+    
+    public void add(Component C) \{
+        children.add(C);
+    \}
+    
+    public void remove(Component c) \{
+        children.remove(c);
+        for (Component t : children) \{
+            if (t instanceof Composite) \{
+                ((Composite)t).remove(c);
+            \}            
+        \}
+    \}
+    
+    public Component getChild(int index) \{
+        return children.get(index);
+    \}
+
+    public Iterator<Component> iterator() \{
+        \LA{}Composite iterator\RA{}
+    \}
+\}
+\nwendcode{}\nwbegindocs{8}\nwdocspar
+
+Vi noterar att vi vill att alla komponenter som innehålls i
+en \texttt{Composite} ska vara med i \texttt{getWeight} respektive 
+\texttt{toString}, därmed är det naturligt att implementera dessa rekursivt.
+
+\nwenddocs{}\nwbegincode{9}\moddef{AbstractComponent getWeight}\endmoddef\nwstartdeflinemarkup\nwenddeflinemarkup
+double sum = weight;
+if (children != null) \{
+    for (Component c : children) \{
+        sum+=c.getWeight();
+    \}
+\}
+return sum;
+\nwendcode{}\nwbegindocs{10}\nwdocspar
+
+Notera att denna implementation ger en "trailing newline",
+dock påverkar detta inte oss i vår implementation därmed bryr
+vi oss inte om att göra en mer korrekt implementation.
+\nwenddocs{}\nwbegincode{11}\moddef{AbstractComponent toString}\endmoddef\nwstartdeflinemarkup\nwenddeflinemarkup
+StringBuilder sb = new StringBuilder();
+sb.append(name).append("\\n");
+if (children != null) \{
+    for (Component c : children) \{
+       sb.append(c.toString());
+    \}
+\}
+return sb.toString();
+\nwendcode{}\nwbegindocs{12}\nwdocspar
+
+Vi återkommer till klienten (dvs {\Tt{}Main.java\nwendquote}) senare. 
+Vi går nu igenom de olika iteratorna. I vår \texttt{Composite}
+har vi:
+
+\nwenddocs{}\nwbegincode{13}\moddef{Composite iterator}\endmoddef\nwstartdeflinemarkup\nwenddeflinemarkup
+return new BFIterator(this);
+//return new DFIterator(this);
+\nwendcode{}\nwbegindocs{14}\nwdocspar
+
+där \texttt{BFIterator} är breadth-first-iterator och 
+\texttt{DFIterator} är depth-first-iterator. Vi har implementationer
+för dessa i {\Tt{}BFIterator.java\nwendquote} respektive {\Tt{}DFIterator.java\nwendquote}.
+Vi börjar med implementationen av BFIterator. Vi vill använda oss
+av en kö-struktur för att enklast kunna implementera detta. För detta
+används Javas egna länkade lista. Vi bygger upp kön vid initering så att elementen
+ges i breadth-first ordning när vi sedan använder \texttt{pop} på listan. Som kan ses 
+i koden görs detta rekursivt.
+
+\nwenddocs{}\nwbegincode{15}\moddef{BFIterator.java}\endmoddef\nwstartdeflinemarkup\nwenddeflinemarkup
+import java.util.Iterator;
+import java.util.LinkedList;
+public class BFIterator implements Iterator<Component>\{
+    private LinkedList<Component> queue;
+    public BFIterator(Composite composite) \{ 
+        queue = new LinkedList<Component>();
+        queue.add(composite);
+        queueBuilder(composite);
+    \}
+    
+    private void queueBuilder(Composite currentNode) \{
+        for (int i = 0; i < currentNode.children.size(); i++) \{
+            queue.add(currentNode.getChild(i));
+        \}
+
+        for (int i = 0; i < currentNode.children.size(); i++) \{
+            Component maybeComposite = currentNode.getChild(i);
+            if (maybeComposite instanceof Composite) \{
+                queueBuilder((Composite) maybeComposite);                
+            \}
+        \}
+    \}
+
+    public boolean hasNext() \{
+        return !queue.isEmpty();
+    \}
+
+    public Component next() \{
+        return queue.pop();
+    \}
+
+\}
+\nwendcode{}\nwbegindocs{16}\nwdocspar
+
+Metodiken i {\Tt{}DFIterator.java\nwendquote} är analog, fast konstruktionen är för en depth-first-iterering:
+
+\nwenddocs{}\nwbegincode{17}\moddef{DFIterator.java}\endmoddef\nwstartdeflinemarkup\nwenddeflinemarkup
+import java.util.Iterator;
+import java.util.LinkedList;
+public class DFIterator implements Iterator<Component>\{
+    private LinkedList<Component> queue;
+    
+    // build the queue
+    public DFIterator(Composite composite) \{
+        queue = new LinkedList<Component>();
+        queue.add(composite);
+        queueBuilder(composite);
+    \}
+    
+    private void queueBuilder(Composite currentNode) \{
+        for (Component c : currentNode.children) \{
+            queue.add(c);
+            if (c instanceof Composite) \{ 
+                queueBuilder((Composite) c);         
+            \}
+        \}        
+    \}
+
+    public boolean hasNext() \{
+        return !queue.isEmpty();
+    \}
+
+    public Component next() \{
+        return queue.pop();
+    \}
+\}
+\nwendcode{}\nwbegindocs{18}\nwdocspar
+
+Vi redovisar då klientkoden även för extrauppgiften samtidigt. Vi vill skapa ett antal lådor vi lägger i varandra,
+vi har som krav djup tre. Vi ska ha minst 10 objekt totalt och vi ska kontrollera att \texttt{remove} fungerar som den ska.
+Detta görs genom följande implementation:
+
+\nwenddocs{}\nwbegincode{19}\moddef{Main.java}\endmoddef\nwstartdeflinemarkup\nwenddeflinemarkup
+public class Main \{ // first assignment (and X4), see Factory for assignment two
+    public static void main(String[] args) \{
+        Composite suitcase = new Composite(3000, "suitcase");
+        Composite mediumBag = new Composite(1000,"medium bag");
+        Composite smallBag = new Composite(500, "small bag");
+        Leaf superImportantThing = new Leaf(50, "super important thing");
+        suitcase.add(mediumBag);
+        mediumBag.add(smallBag);
+        smallBag.add(superImportantThing);
+
+        Composite[] bags = \{suitcase, mediumBag, smallBag\};
+        
+        for (int i=0; i < 10; i++) \{ // expensive to bring weights on a flight
+            bags[i%3].add(new Leaf((double) (i+1)*100, (i+1)+" hg weight"));
+        \}
+        System.out.println("weight of suitcase: "+suitcase.getWeight());
+        System.out.println("things:\\n"+suitcase);
+        suitcase.remove(smallBag); // check that lower depth stuff gets removed 
+        System.out.println();
+        System.out.println("weight of suitcase: "+suitcase.getWeight());
+        System.out.println("things:\\n"+suitcase);
+        
+        System.out.println("\\n\\n");
+        for (Component c : suitcase) \{
+            System.out.println(c.getName());
+        \}
+    \}
+\}
+\nwendcode{}\nwbegindocs{20}   
+
+
+\section{Uppgift 2}
+Vi ska här använda ett Factory-designmönster. Vi vill gömma alla konstruktors, därmed skapar vi alla filer
+som vår fil med \texttt{main}-metoden beror på i ett paket som vi sedan importerar. Notera att om vi inte skriver 
+\texttt{public}, \texttt{private} eller \texttt{protected} så har vår metod (i detta fall \texttt{Human}) endast scope i paketet.
+Först skapar vi människan:
+
+\nwenddocs{}\nwbegincode{21}\moddef{human/Human.java}\endmoddef\nwstartdeflinemarkup\nwenddeflinemarkup
+package human;
+
+public abstract class Human \{
+    String pnr;
+    Human()\{\} 
+    public static Human create(String pnr) \{
+        if (pnr.charAt(9)=='0') \{
+            return new NonBinary(pnr);
+        \}
+        else if (pnr.charAt(9)%2 == 0) \{
+            return new Man(pnr);
+        \}
+        else \{
+            return new Woman(pnr);
+        \}
+    \}
+\}
+\nwendcode{}\nwbegindocs{22}\nwdocspar
+
+Sedan skapar vi alla klasser som ärver denna den abstrakta människan.
+
+\nwenddocs{}\nwbegincode{23}\moddef{human/Man.java}\endmoddef\nwstartdeflinemarkup\nwenddeflinemarkup
+package human;
+public class Man extends Human \{
+    protected Man(String pnr) \{
+        this.pnr=pnr;
+    \}
+\}
+\nwendcode{}\nwbegindocs{24}\nwdocspar
+
+\nwenddocs{}\nwbegincode{25}\moddef{human/NonBinary.java}\endmoddef\nwstartdeflinemarkup\nwenddeflinemarkup
+package human;
+public class NonBinary extends Human \{
+    protected NonBinary(String pnr) \{
+        this.pnr=pnr;
+    \}
+\}
+\nwendcode{}\nwbegindocs{26}\nwdocspar
+
+\nwenddocs{}\nwbegincode{27}\moddef{human/Woman.java}\endmoddef\nwstartdeflinemarkup\nwenddeflinemarkup
+package human;
+public class Woman extends Human \{
+    protected Woman(String pnr) \{
+        this.pnr=pnr;
+    \}
+\}
+\nwendcode{}\nwbegindocs{28}\nwdocspar
+
+Vi testar att detta fungerar i {\Tt{}Factory.java\nwendquote}, notera att vi får compile-time-errors 
+om vi avkommenterar kommentarerna. Om assertsen avklaras så skapas våra människor korrekt.
+
+\nwenddocs{}\nwbegincode{29}\moddef{Factory.java}\endmoddef\nwstartdeflinemarkup\nwenddeflinemarkup
+import static org.junit.Assert.*;
+import human.*;
+
+public class Factory \{ // second assignment
+    public static void main(String[] args) \{
+        // Human h = new Human()\{\}; // this throws compilation error
+        // Human m = new Man("this is not visible");
+        
+        Human billie = Human.create("1234567890");
+        Human bob = Human.create("1234567892");
+        Human bella = Human.create("1234567891");
+
+        assertTrue(billie instanceof NonBinary);
+        assertTrue(bob instanceof Man);
+        assertTrue(bella instanceof Woman);
+        
+        System.out.println("all are correct instances");
+    \}
+\}
+\nwendcode{}\nwbegindocs{30}\nwdocspar
+\nwenddocs{}\end{document}
+

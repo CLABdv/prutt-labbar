@@ -3,9 +3,9 @@ import java.util.Iterator;
 
 public class Composite extends AbstractComponent implements Iterable<Component>{
     public Composite(double weight, String name) {
-        this.weight=weight;
-        this.name=name;
-        children= new ArrayList<>();
+        this.weight = weight;
+        this.name = name;
+        children = new ArrayList<>();
     }
     
     public void add(Component C) {
@@ -17,7 +17,7 @@ public class Composite extends AbstractComponent implements Iterable<Component>{
         for (Component t : children) {
             if (t instanceof Composite) {
                 ((Composite)t).remove(c);
-            }
+            }            
         }
     }
     
