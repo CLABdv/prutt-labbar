@@ -53,8 +53,12 @@ public class SparseVecFPTree <E extends Comparable<E>> extends TreeMap<Integer, 
     }
 
     public Object[] toArray() {
-        Stream<Map.Entry<Integer, E>> sortedStream = entrySet().stream(); 
-        return sortedStream.toArray();
+        Stream<Map.Entry<Integer, E>> sortedStream = entrySet().stream(); // should be sorted by key by default
+        List<E> denseList = new LinkedList<E>();
+        sortedStream.forEach(e -> {
+            denseList.addAll(Collections.nCopies(e.getKey() - denseList.size(), null)); // note we compare index vs size i.e. length
+            denseList.add(e.getValue());});
+        return denseList.toArray();
     }
 
     // here we throw away the indices
@@ -92,6 +96,12 @@ public class SparseVecFPTree <E extends Comparable<E>> extends TreeMap<Integer, 
         System.out.println(test);
         test.removeAt(5);
         test.removeAt(12);
+        int i=0;
+        for (Object o : test.toArray()) {
+            System.out.print("index is " + i);
+            System.out.println(", object is " + o);
+            ++i;
+        }
         test = test.mapValues((v -> v*2));
         System.out.println(test);
         SparseVecFPTree<Integer> newTest = new SparseVecFPTree<Integer>();

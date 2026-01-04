@@ -58,19 +58,17 @@ public class SparseVecFP <E extends Comparable<E>> implements SparseVec<E> {
         return state.get(pos);
     }
 
-    // I dont know if we want to make it to a dense array i.e. intersperse all indices with zeroes,
-    // if that is the case, how do we pass 0 when we also have a map?
-    // then we need to pass zero to the map because function passed is not
-    // necessarily a zero-preserving map.
-    // Since we the type signature of those functions do not have a zero
-    // we conclude that the toArray does not create a dense array.
+    // basically the following in (a bit subpar) haskell
+    // unsparse xs = reverse $ u (0, []) xs
+    //     where u (_, l) [] = l
+    //           u (i, l) ((ix, x):xs) =  u (ix+1, x : replicate (ix - i) 0 ++ l) xs
     public Object[] toArray() {
         Stream<Map.Entry<Integer, E>> sortedStream = state.entrySet().stream(); // should be sorted by key by default
-        //List<E> denseList = new LinkedList<E>();
-        //sortedStream.forEach(e -> {
-        //    denseList.addAll(Collections.nCopies(e.getKey() - denseList.size(), zero)); // note we compare index vs size i.e. length
-        //    denseList.add(e.getValue());});
-        return sortedStream.toArray();
+        List<E> denseList = new LinkedList<E>();
+        sortedStream.forEach(e -> {
+            denseList.addAll(Collections.nCopies(e.getKey() - denseList.size(), null)); // note we compare index vs size i.e. length
+            denseList.add(e.getValue());});
+        return denseList.toArray();
     }
 
     // here we throw away the indices
@@ -100,12 +98,20 @@ public class SparseVecFP <E extends Comparable<E>> implements SparseVec<E> {
     }
     public static void main(String[] args) {
         SparseVecFP<Integer> test = new SparseVecFP<Integer>();
-        test.add(3);
+        test.add(3, 42);
         test.add(10, 5);
         System.out.println(test);
         test.add(12, 5);
         test.add(10, 42);
         System.out.println(test);
+        
+        int i=0;
+        for (Object o : test.toArray()) {
+            System.out.print("index is " + i);
+            System.out.println(", object is " + o);
+            ++i;
+        }
+
         test.removeAt(5);
         test.removeAt(12);
         test = test.mapValues((v -> v*2));
